@@ -1,9 +1,10 @@
 class LinkedList
 
-  attr_accessor :head, :last
+  attr_accessor :head, :last, :min, :max
 
   def initialize
     self.head = Node.new
+    self.min = self.max = nil
   end
 
   def add_to_head(data)
@@ -29,9 +30,30 @@ class LinkedList
       self.last.next = n
       self.last = n
     end
+    update_min_max(n)
     self
   end
   alias_method :enqueue, :add_to_tail
+
+  def update_min_max(node)
+    update_min(node)
+    update_max(node)
+  end
+  private :update_min_max
+
+  def update_max(node)
+    if self.max.nil? || (node > self.max)
+      self.max = node
+    end
+  end
+  private :update_max
+
+  def update_min(node)
+    if self.min.nil? || (node < self.min)
+      self.min = node
+    end
+  end
+  private :update_min
 
   def drop_last
     n = self.head
@@ -186,7 +208,6 @@ class LinkedList
     puts self
     self
   end
-
 end
 
 class Node
@@ -201,11 +222,19 @@ class Node
   end
 
   def ===(other)
-    self.data  = other.data
+    self.data == other.data
   end
 
   def +(another_node)
     self.data + another_node.data
+  end
+
+  def >(another_node)
+    self.data > another_node.data
+  end
+
+  def <(another_node)
+    self.data < another_node.data
   end
 end
 
@@ -215,11 +244,13 @@ end
 #puts l.pop
 #puts l
 l = LinkedList.new
-l.enqueue("a").enqueue("x").enqueue("c")
+l.enqueue("z").enqueue("x").enqueue("c")
 #l.dequeue
 l.enqueue("a").enqueue("b").enqueue("x")
 puts l.make_circle(3, 6)
-puts l.circular?
+#puts l.circular?
+puts l.min
+puts l.max
 ##puts l.remove_duplicates
 ##puts l.remove_duplicates_without_buffer
 #puts l
